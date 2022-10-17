@@ -25,6 +25,8 @@ export interface IConnection {
 
     priority: number;
 
+    get currentState(): {stateKey: string, content: unknown};
+
     /**
      * The unique connection ID. This is a opaque hash of the roomId, connection type and state key.
      */
@@ -70,8 +72,6 @@ export interface IConnection {
     /**
      * If supported, this is sent when a user attempts to remove the connection from a room. The connection
      *  state should be removed and any resources should be cleaned away.
-     * @props purgeRemoteConfig Should the remote configuration for the connection be purged (in the case that
-     * other connections may be sharing a remote resource).
      */
     onRemove?: () => Promise<void>;
 

@@ -126,6 +126,10 @@ export class GitHubDiscussionConnection extends BaseConnection implements IConne
         return true;
     }
 
+    public get currentState() {
+        return this.state;
+    }
+
     public get discussionNumber() {
         return this.state.discussion;
     }

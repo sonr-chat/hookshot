@@ -205,10 +205,13 @@ export class GenericHookConnection extends BaseConnection implements IConnection
             }
         }
 
-        public get priority(): number {
-            return this.state.priority || super.priority;
-        }
+    public get priority(): number {
+        return this.state.priority || super.priority;
+    }
 
+    public get currentState() {
+        return this.state;
+    }
 
     public isInterestedInStateEvent(eventType: string, stateKey: string) {
         return GenericHookConnection.EventTypes.includes(eventType) && this.stateKey === stateKey;

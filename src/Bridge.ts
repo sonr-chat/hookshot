@@ -934,6 +934,26 @@ export class Bridge {
         }
     }
 
+    private async handleRoomUpgrade(oldRoomId: string, newRoomId: unknown, sender: string, eventId: string) {
+        if (!this.connectionManager) {
+            // Not ready yet.
+            return;
+        }
+        const logger = new Logger('Bridge.RoomUpgrade', { requestId: eventId });
+        if (typeof newRoomId !== "string") {
+            logger.warn(`Room upgrade requested but the replacement_room was not a string`);
+        }
+        // First, tombstone the existing room
+        const existingConnections = await this.connectionManager?.getAllConnectionsForRoom(oldRoomId);
+        const removePromises = Promise.allSettled(existingConnections.map(c => c.onRemove?.()));
+        for (const connection of existingConnections) {
+            connection?.onRemove();
+        }
+        const replacementRoom = event.content.replacement_room as string;
+        log.info(`Room upgrade for existing room ${roomId} to ${replacementRoom}`, )
+        log.info(`Room u`)
+    }
+
     private async onRoomEvent(roomId: string, event: MatrixEvent<Record<string, unknown>>) {
         if (!this.connectionManager) {
             // Not ready yet.
@@ -947,6 +967,9 @@ export class Bridge {
                     this.config.removeMemberFromCache(roomId, event.state_key);
                 }
                 return;
+            }
+            if (event.state_key === '' && event.type === 'm.room.tombstone') {
+                return this.handleRoomUpgrade(roomId, event.content.replacement_room, event.sender, event.event_id);
             }
             // A state update, hurrah!
             const existingConnections = this.connectionManager.getInterestedForRoomState(roomId, event.type, event.state_key);
@@ -987,7 +1010,7 @@ export class Bridge {
                         log.error(`Failed to create setup widget for ${roomId}`, ex);
                     }
                 }
-            } 
+            }
             return;
         }
 

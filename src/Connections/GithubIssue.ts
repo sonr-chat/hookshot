@@ -166,6 +166,10 @@ export class GitHubIssueConnection extends BaseConnection implements IConnection
             super(roomId, stateKey, GitHubIssueConnection.CanonicalEventType);
         }
 
+    public get currentState() {
+        return this.state;
+    }
+
     public isInterestedInStateEvent(eventType: string, stateKey: string) {
         return GitHubIssueConnection.EventTypes.includes(eventType) && this.stateKey === stateKey;
     }

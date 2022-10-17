@@ -155,6 +155,10 @@ export class GitHubDiscussionSpace extends BaseConnection implements IConnection
         return this.state.repo.toLowerCase();
     }
 
+    public get currentState() {
+        return this.state;
+    }
+
     public get owner() {
         return this.state.owner.toLowerCase();
     }
